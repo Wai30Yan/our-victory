@@ -1,52 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Box,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
   SliderMark,
-  Tooltip, 
+  Tooltip,
+  useBreakpointValue, 
 } from '@chakra-ui/react'
+import moment from 'moment';
 
-export default function Bar(): JSX.Element {
-    const [sliderValue, setSliderValue] = useState(5)
-    const [showTooltip, setShowTooltip] = useState(false)
+type BarProps = {
+  duration: number,
+  curTime: number,
+  onTimeUpdate: (time: number) => void
+}
 
-    return (
-        <Slider
-            maxWidth='700'
-            id='slider'
-            defaultValue={5}
-            min={0}
-            max={100}
-            colorScheme='teal'
-            onChange={(v) => setSliderValue(v)}
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
+export default function Bar(props: BarProps): JSX.Element {
+
+  const { duration, curTime, onTimeUpdate } = props;
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  const sliderWidth = useBreakpointValue(
+    {
+      base: '350',
+      md: '700',
+    },
+    {
+      fallback: 'md',
+    }
+  )
+
+  function formatDuration(duration: number) {
+    return Math.floor(duration / 60) + ':' + ('0' + Math.floor(duration % 60)).slice(-2); 
+  }
+
+  function dragSlider(time: number) {
+
+    onTimeUpdate(time);
+  }
+
+  return (
+      <Slider
+          maxWidth={sliderWidth}
+          id='slider'
+          min={0}
+          max={duration}
+          value={curTime}
+          colorScheme='teal'
+          focusThumbOnChange={true}
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+          onChange={(v) => dragSlider(v)}
+        >
+          <SliderMark value={0} mt='1' ml='-2.5' fontSize='sm'>
+            {formatDuration(curTime)}
+          </SliderMark>
+
+          <SliderMark value={duration} mt='1' ml='-2.5' fontSize='sm'>
+            {formatDuration(duration)}
+          </SliderMark>
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <Tooltip
+            hasArrow
+            bg='teal.500'
+            color='white'
+            placement='top'
+            isOpen={showTooltip}
+            label={`${Math.floor(curTime / 60) + ':' + ('0' + Math.floor(curTime % 60)).slice(-2)}s`}
+            // label={`${sliderValue}s`}
           >
-            <SliderMark value={25} mt='1' ml='-2.5' fontSize='sm'>
-              25%
-            </SliderMark>
-            <SliderMark value={50} mt='1' ml='-2.5' fontSize='sm'>
-              50%
-            </SliderMark>
-            <SliderMark value={75} mt='1' ml='-2.5' fontSize='sm'>
-              75%
-            </SliderMark>
-            <SliderTrack>
-              <SliderFilledTrack />
-            </SliderTrack>
-            <Tooltip
-              hasArrow
-              bg='teal.500'
-              color='white'
-              placement='top'
-              isOpen={showTooltip}
-              label={`${sliderValue}%`}
-            >
-              <SliderThumb />
-            </Tooltip>
-          </Slider>
-    )
+            <SliderThumb />
+          </Tooltip>
+        </Slider>
+  )
 }
