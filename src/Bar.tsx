@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Slider,
   SliderTrack,
@@ -8,7 +8,6 @@ import {
   Tooltip,
   useBreakpointValue, 
 } from '@chakra-ui/react'
-import moment from 'moment';
 
 type BarProps = {
   duration: number,

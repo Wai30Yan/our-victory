@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Text,
-  Box,
   Flex,
   Button,
   ButtonGroup, 
@@ -41,7 +40,6 @@ function App() {
     const audio = document.getElementById("audio") as HTMLAudioElement;
     audio.pause();
     audio.load();
-
   }, [src])
   
   return (

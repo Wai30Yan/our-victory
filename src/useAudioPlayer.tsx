@@ -8,7 +8,6 @@ function useAudioPlayer() {
 
   useEffect(() => {
       const audio = document.getElementById("audio") as HTMLAudioElement;
-      // console.log(audio.player)
 
       // state setters wrappers
       const setAudioData = () => {
